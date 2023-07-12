@@ -15,7 +15,7 @@ export default function Home() {
         />
 
         <h2 className="text-4xl font-extrabold tracking-tight text-primary px-5 text-center">
-          Welcome to Chit Chat App
+          Welcome to Chit Chat Pro
         </h2>
 
         <AuthForm />

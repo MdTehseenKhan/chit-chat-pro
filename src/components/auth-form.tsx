@@ -1,9 +1,13 @@
 "use client"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
+// Authentication
 import axios from "axios"
-import { signIn } from "next-auth/react"
+import { signIn, useSession } from "next-auth/react"
 import { toast } from "react-hot-toast"
+
+// React Icons
 import { BsGithub, BsGoogle } from "react-icons/bs"
 
 // React Hook Form & Zod
@@ -16,9 +20,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
+// Custom Components
 import { AuthSocialButton } from "@/components"
-import { cn } from "@/lib/utils"
 
+// Client-side validation with Zod
 const formSchema = z.object({
   name: z.string().optional(),
   email: z.string().email({
@@ -29,18 +34,19 @@ const formSchema = z.object({
   }),
 })
 
+// @types
 type Variant = "LOGIN" | "REGISTER"
 type FormSchemaType = z.infer<typeof formSchema>
 
+// Component
 const AuthForm = () => {
+  const router = useRouter()
+
+  // States
   const [variant, setVariant] = useState<Variant>("LOGIN")
   const [loading, setLoading] = useState(false)
 
-  const toggleVariant = useCallback(() => {
-    form.reset()
-    setVariant(variant === "LOGIN" ? "REGISTER" : "LOGIN")
-  }, [variant])
-
+  // React Hook Form
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -50,6 +56,13 @@ const AuthForm = () => {
     },
   })
 
+  // Actions
+  const toggleVariant = useCallback(() => {
+    form.reset()
+    setVariant(variant === "LOGIN" ? "REGISTER" : "LOGIN")
+  }, [variant])
+
+  // Form Handlers
   const onSubmit = (data: FormSchemaType) => {
     setLoading(true)
 
@@ -58,7 +71,7 @@ const AuthForm = () => {
         .post("/api/register", data)
         .then(() => {
           toast.success("Successfully Registered")
-          form.reset()
+          signIn("credentials", data)
         })
         .catch((e) => {
           toast.error("Something went wrong!")
@@ -76,6 +89,7 @@ const AuthForm = () => {
 
           if (callback?.ok && !callback?.error) {
             toast.success("Successfully Logged in!")
+            router.push("/users")
           }
         })
         .finally(() => setLoading(false))
@@ -83,8 +97,27 @@ const AuthForm = () => {
   }
 
   const socialAction = (actionType: string) => {
-    console.log(actionType)
+    setLoading(true)
+
+    signIn(actionType, { redirect: false })
+      .then((callback) => {
+        console.log(callback)
+        if (callback?.error) toast.error("Invalid Credentials")
+
+        if (callback?.ok && !callback?.error) {
+          toast.success("Successfully Logged in!")
+          router.push("/users")
+        }
+      })
+      .finally(() => setLoading(false))
   }
+
+  // Session
+  const session = useSession()
+
+  useEffect(() => {
+    if (session?.status === "authenticated") router.push("/users")
+  }, [session?.status, router])
 
   return (
     <div
@@ -169,13 +202,13 @@ const AuthForm = () => {
         </div>
 
         <div className="grid grid-cols-2 gap-2">
-          <AuthSocialButton icon={BsGithub} onClick={() => socialAction("GITHUB")} disabled={loading} />
-          <AuthSocialButton icon={BsGoogle} onClick={() => socialAction("GOOGLE")} disabled={loading} />
+          <AuthSocialButton icon={BsGithub} onClick={() => socialAction("github")} disabled={loading} />
+          <AuthSocialButton icon={BsGoogle} onClick={() => socialAction("google")} disabled={loading} />
         </div>
 
         <div>
           {variant === "REGISTER" ? "Already have an account? " : "Don't have an account? "}
-          <Button variant="link" className={cn("p-0")} onClick={toggleVariant} disabled={loading}>
+          <Button variant="link" className="p-0" onClick={toggleVariant} disabled={loading}>
             {variant === "REGISTER" ? "Login" : "Sign up"}
           </Button>
         </div>
