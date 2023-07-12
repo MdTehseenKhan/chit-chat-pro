@@ -78,6 +78,10 @@
 }
 
 /* CUSTOM CLASSES */
+html,
+body {
+  @apply h-full w-full;
+}
 .flex-center {
   @apply flex justify-center items-center;
 }

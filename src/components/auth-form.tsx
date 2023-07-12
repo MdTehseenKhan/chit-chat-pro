@@ -198,7 +198,7 @@ const AuthForm = () => {
         <div className="relative flex-center">
           <div className="absolute w-full border-t border-slate-300 z-[1]"></div>
 
-          <span className="bg-white px-2 text-slate-500 z-[2]">Or continue with</span>
+          <span className="bg-slate-200 text-primary sm:bg-white px-2 sm:text-slate-500 z-[2]">Or continue with</span>
         </div>
 
         <div className="grid grid-cols-2 gap-2">
