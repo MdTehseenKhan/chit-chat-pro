@@ -60,7 +60,7 @@ const AuthForm = () => {
   const toggleVariant = useCallback(() => {
     form.reset()
     setVariant(variant === "LOGIN" ? "REGISTER" : "LOGIN")
-  }, [variant])
+  }, [variant, form])
 
   // Form Handlers
   const onSubmit = (data: FormSchemaType) => {
