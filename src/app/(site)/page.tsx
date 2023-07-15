@@ -1,9 +1,10 @@
 import Image from "next/image"
-import { AuthForm } from "@/components"
+
+import AuthForm from "./components/auth-form"
 
 export default function Home() {
   return (
-    <main className="w-full h-full flex-center bg-slate-200">
+    <main className="w-full min-h-screen flex-center bg-slate-200">
       <div className="flex flex-col items-center gap-3 py-10">
         <Image
           src="/images/logo.png"
@@ -18,7 +19,9 @@ export default function Home() {
           Welcome to Chit Chat Pro
         </h2>
 
-        <AuthForm />
+        <div className="px-5 w-full">
+          <AuthForm />
+        </div>
       </div>
     </main>
   )

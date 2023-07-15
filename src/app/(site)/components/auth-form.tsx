@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 // Custom Components
-import { AuthSocialButton } from "@/components"
+import AuthSocialButton from "./auth-social-button"
 
 // Client-side validation with Zod
 const formSchema = z.object({
@@ -124,10 +124,10 @@ const AuthForm = () => {
       className=" 
         mt-8 
         p-10 
+        shadow-md 
+        bg-white 
+        rounded-md 
         w-full 
-        sm:shadow-md 
-        sm:rounded-md 
-        sm:bg-white 
         sm:max-w-md
       "
     >
@@ -198,7 +198,7 @@ const AuthForm = () => {
         <div className="relative flex-center">
           <div className="absolute w-full border-t border-slate-300 z-[1]"></div>
 
-          <span className="bg-slate-200 text-primary sm:bg-white px-2 sm:text-slate-500 z-[2]">Or continue with</span>
+          <span className=" bg-white px-2 text-slate-500 z-[2]">Or continue with</span>
         </div>
 
         <div className="grid grid-cols-2 gap-2">
@@ -208,7 +208,13 @@ const AuthForm = () => {
 
         <div>
           {variant === "REGISTER" ? "Already have an account? " : "Don't have an account? "}
-          <Button variant="link" className="p-0" onClick={toggleVariant} disabled={loading}>
+          <Button
+            //
+            variant="link"
+            className="p-0"
+            onClick={toggleVariant}
+            disabled={loading}
+          >
             {variant === "REGISTER" ? "Login" : "Sign up"}
           </Button>
         </div>
